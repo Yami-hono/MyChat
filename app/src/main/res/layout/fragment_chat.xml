@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/chat"
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:clickable="true"
+        android:layout_height="match_parent"
+        tools:context=".ui.main.ChatFragment">
+
+        <TextView
+            android:id="@+id/message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/receiver_name"
+            android:layout_width="match_parent"
+            android:textSize="23sp"
+            android:padding="5dp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:background="#ff00ff"
+            android:gravity="center_vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="wrap_content"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:padding="10dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            android:clipToPadding="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@+id/receiver_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/sender_cl"
+            tools:listitem="@layout/other_message" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:id="@+id/sender_cl"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@color/cardview_shadow_start_color"
+            android:padding="10dp"
+            android:layout_height="wrap_content">
+
+             <EditText
+                 android:id="@+id/msg_txt"
+                 android:padding="10dp"
+                 android:hint="Message"
+                 android:background="@color/white"
+                 app:layout_constraintBottom_toBottomOf="parent"
+                 app:layout_constraintStart_toStartOf="parent"
+                 android:layout_width="250dp"
+                 android:layout_height="wrap_content"/>
+
+            <ImageButton
+                android:id="@+id/send_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#ff00ff"
+                android:src="@drawable/ic_send_logo"
+                app:layout_constraintBottom_toBottomOf="@id/msg_txt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.194"
+                app:layout_constraintStart_toEndOf="@id/msg_txt"
+                app:layout_constraintTop_toTopOf="@id/msg_txt"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <ImageButton
+                android:id="@+id/send_cam_"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:backgroundTint="#ff00ff"
+                android:src="@drawable/ic_camera_logo"
+                app:layout_constraintBottom_toBottomOf="@id/msg_txt"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.818"
+                app:layout_constraintStart_toEndOf="@id/msg_txt"
+                app:layout_constraintTop_toTopOf="@id/msg_txt"
+                app:layout_constraintVertical_bias="0.0" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+</layout>
