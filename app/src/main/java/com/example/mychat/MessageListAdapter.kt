@@ -87,9 +87,8 @@ class MessageListAdapter(val context: Context) : ListAdapter<Message,MessageList
         val binding: MyImageMessageBinding= MyImageMessageBinding.bind(itemView)
         override fun bind(message: Message) {
             with(binding) {
-                Log.i("imageUrlmessage", "bind: ${StorageUtil.pathToReference(message.msg)}/image/jpeg")
                 Glide.with(root.context)
-                    .load("${StorageUtil.pathToReference(message.msg)}.jpeg" )
+                    .load(message.msg )
                     .centerCrop()
                     .placeholder(R.drawable.ic_baseline_image)
                     .into(imageViewMessageImage)
@@ -103,7 +102,7 @@ class MessageListAdapter(val context: Context) : ListAdapter<Message,MessageList
         override fun bind(message: Message) {
             with(binding) {
                 Glide.with(root.context)
-                    .load(StorageUtil.pathToReference(message.msg))
+                    .load(message.msg)
                     .placeholder(R.drawable.ic_baseline_image)
                     .centerCrop()
                     .into(imageViewMessageImage)

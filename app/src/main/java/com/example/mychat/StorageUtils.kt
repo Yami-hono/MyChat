@@ -14,7 +14,7 @@ object StorageUtil {
 
     private val currentUserRef: StorageReference
         get() = storageInstance.reference
-            .child("$chat/messages"
+            .child("$chat"
                 ?: throw NullPointerException("UID is null."))
 
     fun uploadProfilePhoto(imageBytes: ByteArray,
@@ -35,7 +35,11 @@ object StorageUtil {
         val ref = currentUserRef.child("messages/${UUID.nameUUIDFromBytes(imageBytes)}")
         ref.putBytes(imageBytes)
             .addOnSuccessListener {
-                onSuccess(ref.path)
+//                onSuccess(ref.path)
+                ref.downloadUrl.addOnSuccessListener {
+                    onSuccess(it.toString())
+                }
+
             }
     }
 

@@ -18,7 +18,6 @@ import com.example.mychat.MessageListAdapter
 import com.example.mychat.StorageUtil
 import com.example.mychat.User
 import com.example.mychat.databinding.FragmentChatBinding
-import com.google.firebase.auth.FirebaseAuth
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
