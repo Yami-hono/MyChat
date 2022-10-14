@@ -136,9 +136,10 @@ class ChatFragment : Fragment() {
     fun addObserver(){
         viewModel.messageList.observe(viewLifecycleOwner){ it ->
             if(it.isNotEmpty()) {
-                for( i in it)
-                    msgListAdapter.addMessage(i)
-//                msgListAdapter.setUpdatedList(it as ArrayList<Message>)
+                Log.i("messageItems", "addObserver: $it")
+//                for( i in it)
+//                    msgListAdapter.addMessage(i)
+                msgListAdapter.setUpdatedList(it as ArrayList<Message>)
             }
 
         }

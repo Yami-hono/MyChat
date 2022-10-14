@@ -27,12 +27,14 @@ class MainActivity : AppCompatActivity() {
 
         if(!isUser){
             editor.putBoolean("ALREADY_USER",true)
-            editor.putString("name", "Yami 8")
-            editor.putString("id","8")
-            val user=User("Yami 8","8")
-//            editor.putString("name", "Sigma")
-//            editor.putString("id","Test@1")
-//            val user=User("Sigma","Test@1")
+            //other
+//            editor.putString("name", "Yami 8")
+//            editor.putString("id","8")
+//            val user=User("Yami 8","8")
+            //me
+            editor.putString("name", "Sigma")
+            editor.putString("id","Test@1")
+            val user=User("Sigma","Test@1")
             viewModel.putData(user)
         }
         editor.apply()

@@ -41,6 +41,7 @@ class ChatViewModel:ViewModel() {
                     val value = snapshot.value as HashMap<String?, HashMap<String, String>>?
                     Log.i("messageItems", "onDataChange: $value")
 
+                    msgArr.clear()
 
                     if (value != null) {
                         for ((key, vl) in value) {
@@ -62,8 +63,8 @@ class ChatViewModel:ViewModel() {
                             }
                         }
                     }
-//                    msgArr.sortByDescending { it.time }
-//                    msgArr.reverse()
+                    msgArr.sortByDescending { it.time }
+                    msgArr.reverse()
                     messageList.value = msgArr
                 }
 
