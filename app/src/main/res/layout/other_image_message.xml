@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="start"
 
-        android:background="#ff00ff">
+        android:background="@drawable/message_ring">
         <ImageView
             android:id="@+id/imageView_message_image"
             android:layout_width="250dp"

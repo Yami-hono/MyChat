@@ -84,4 +84,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:15.0.2'
     implementation 'com.google.firebase:firebase-auth:15.1.0'
 
+
+    //smartlook
+//    implementation 'com.smartlook.android:smartlook-analytics:2.1.0'
+
+    //imagePicker
+    implementation 'com.github.dhaval2404:imagepicker:2.1'
+    implementation 'com.github.dhaval2404:imagepicker-support:1.7.1'
 }

@@ -70,8 +70,8 @@ class ChatFragment : Fragment() {
         addObserver()
 //        val editor=sharedPref?.edit()
         msgListAdapter= MessageListAdapter(requireActivity())
-        viewModel.chatId=" ${viewModel.me.id} ${receiver?.id}"            //others
-//        viewModel.chatId=" ${receiver?.id} ${viewModel.me.id}"              //mine
+//        viewModel.chatId=" ${viewModel.me.id} ${receiver?.id}"            //others
+        viewModel.chatId=" ${receiver?.id} ${viewModel.me.id}"              //mine
         binding = FragmentChatBinding.inflate(inflater, container, false)
         binding.receiverName.text=receiver?.name
         viewModel.getMessageList()
@@ -110,6 +110,11 @@ class ChatFragment : Fragment() {
         binding.recyclerView.adapter=msgListAdapter
 
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getMessageList()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
