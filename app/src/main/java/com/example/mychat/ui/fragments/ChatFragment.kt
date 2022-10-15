@@ -71,8 +71,8 @@ class ChatFragment : Fragment(),Call {
         addObserver()
 //        val editor=sharedPref?.edit()
         msgListAdapter= MessageListAdapter(requireActivity(), this)
-        viewModel.chatId=" ${viewModel.me.id} ${receiver?.id}"            //others
-//        viewModel.chatId=" ${receiver?.id} ${viewModel.me.id}"              //mine
+//        viewModel.chatId=" ${viewModel.me.id} ${receiver?.id}"            //others
+        viewModel.chatId=" ${receiver?.id} ${viewModel.me.id}"              //mine
         binding = FragmentChatBinding.inflate(inflater, container, false)
         binding.receiverName.text=receiver?.name
         viewModel.getMessageList()
@@ -93,8 +93,9 @@ class ChatFragment : Fragment(),Call {
             val intent = Intent().apply {
                 type = "image/*"
                 action = Intent.ACTION_GET_CONTENT
-                putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg", "image/png"))
+//                putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg", "image/png"))
             }
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
             startActivityForResult(Intent.createChooser(intent, "Select Image"), RC_SELECT_IMAGE)
         }
         requireActivity()
@@ -120,20 +121,60 @@ class ChatFragment : Fragment(),Call {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == RC_SELECT_IMAGE && resultCode == Activity.RESULT_OK &&
-            data != null && data.data != null) {
-            val selectedImagePath = data.data
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.i("multimedia", "onActivityResult: ${data?.clipData?.itemCount}")
+        if(data?.clipData?.itemCount==null) {
+            if (requestCode == RC_SELECT_IMAGE && resultCode == Activity.RESULT_OK &&
+                data != null && data.data != null
+            ) {
+                val count = data.clipData?.itemCount
+                val selectedImagePath = data.data
 
-            val selectedImageBmp = MediaStore.Images.Media.getBitmap(activity?.contentResolver, selectedImagePath)
+                val selectedImageBmp =
+                    MediaStore.Images.Media.getBitmap(activity?.contentResolver, selectedImagePath)
 
-            val outputStream = ByteArrayOutputStream()
+                val outputStream = ByteArrayOutputStream()
 
-            selectedImageBmp.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
-            val selectedImageBytes = outputStream.toByteArray()
+                selectedImageBmp.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
+                val selectedImageBytes = outputStream.toByteArray()
 
-            StorageUtil.uploadMessageImage(selectedImageBytes,viewModel.chatId) { imagePath ->
-                val message=Message(imagePath,viewModel.me.name,viewModel.me.id,"IMAGE",System.currentTimeMillis().toString())
-                viewModel.putMessage(message )
+                StorageUtil.uploadMessageImage(selectedImageBytes, viewModel.chatId) { imagePath ->
+                    val message = Message(
+                        imagePath,
+                        viewModel.me.name,
+                        viewModel.me.id,
+                        "IMAGE",
+                        System.currentTimeMillis().toString()
+                    )
+                    viewModel.putMessage(message)
+                }
+            }
+        }else{
+            var count = data.clipData?.itemCount
+
+            Log.i("multimedia", "onActivityResult: ${data.data}")
+            Log.i("multimedia", "onActivityResult: ${data.clipData}")
+
+                for (i in 0 until count!!) {
+                    val selectedImagePath = data.clipData?.getItemAt(i)?.uri
+                    val selectedImageBmp =
+                        MediaStore.Images.Media.getBitmap(activity?.contentResolver, selectedImagePath)
+
+                    val outputStream = ByteArrayOutputStream()
+
+                    selectedImageBmp.compress(Bitmap.CompressFormat.JPEG, 50, outputStream)
+                    val selectedImageBytes = outputStream.toByteArray()
+
+                    StorageUtil.uploadMessageImage(selectedImageBytes, viewModel.chatId) { imagePath ->
+                        val message = Message(
+                            imagePath,
+                            viewModel.me.name,
+                            viewModel.me.id,
+                            "IMAGE",
+                            System.currentTimeMillis().toString()
+                        )
+                        viewModel.putMessage(message)
+                }
             }
         }
     }

@@ -1,10 +1,10 @@
 package com.example.mychat.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
 import com.example.mychat.ImageList
@@ -45,5 +45,9 @@ class ImageAdapter(context: Context): PagerAdapter() {
         container.addView(view)
         return view
 
+    }
+
+    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+        container.removeView(`object` as ConstraintLayout)
     }
 }
