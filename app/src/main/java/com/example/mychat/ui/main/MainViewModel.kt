@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mychat.Message
 import com.example.mychat.PostDatabase
 import com.example.mychat.User
 import com.google.firebase.database.*
@@ -78,5 +79,6 @@ class MainViewModel : ViewModel() {
 
 interface Call {
     fun itemClick(user: User)
+    fun messageClick(msg: Message)
 
 }

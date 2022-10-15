@@ -14,6 +14,7 @@ import com.example.mychat.databinding.MyImageMessageBinding
 import com.example.mychat.databinding.MyMessageBinding
 import com.example.mychat.databinding.OtherImageMessageBinding
 import com.example.mychat.databinding.OtherMessageBinding
+import com.example.mychat.ui.main.Call
 
 
 private const val VIEW_TYPE_MY_MESSAGE = 1
@@ -22,7 +23,7 @@ private const val VIEW_IMAGE_OTHER_MESSAGE = 3
 private const val VIEW_IMAGE_MY_MESSAGE = 4
 
 //class MessageListAdapter(val context: Context) : RecyclerView.Adapter<MessageListAdapter.MessageViewHolder>(){
-class MessageListAdapter(val context: Context) : ListAdapter<Message,MessageListAdapter.MessageViewHolder>(DiffCallback()){
+class MessageListAdapter(val context: Context,val call:Call) : ListAdapter<Message,MessageListAdapter.MessageViewHolder>(DiffCallback()){
 
     private var data=ArrayList<Message>()
     private var messages: ArrayList<Message> = ArrayList()
@@ -72,12 +73,8 @@ class MessageListAdapter(val context: Context) : ListAdapter<Message,MessageList
         val binding: MyMessageBinding = MyMessageBinding.bind(itemView)
         override fun bind(message: Message) {
             with(binding) {
-                binding.txtMyMessage.text=message.msg
-                binding.txtMyMessageTime.text= message.time.toString()
-//                userCard.setOnClickListener {
-//                    item.let {
-////                        call.itemClick(it)
-//                    }
+                txtMyMessage.text=message.msg
+                txtMyMessageTime.text= message.time.toString()
                 }
             }
         }
@@ -93,6 +90,9 @@ class MessageListAdapter(val context: Context) : ListAdapter<Message,MessageList
                     .placeholder(R.drawable.ic_baseline_image)
                     .into(imageViewMessageImage)
             }
+            binding.messageRoot.setOnClickListener {
+                call.messageClick(message)
+            }
         }
     }
 
@@ -107,6 +107,9 @@ class MessageListAdapter(val context: Context) : ListAdapter<Message,MessageList
                     .centerCrop()
                     .into(imageViewMessageImage)
             }
+            binding.messageRoot.setOnClickListener {
+                call.messageClick(message)
+            }
         }
     }
 
@@ -115,14 +118,10 @@ class MessageListAdapter(val context: Context) : ListAdapter<Message,MessageList
         val binding: OtherMessageBinding = OtherMessageBinding.bind(itemView)
         override fun bind(message: Message) {
             with(binding) {
-                binding.txtOtherMessage.text=message.msg
-                binding.txtOtherUser.text=message.name
-                binding.txtOtherMessageTime.text= message.time.toString()
+                txtOtherMessage.text=message.msg
+                txtOtherUser.text=message.name
+                txtOtherMessageTime.text= message.time.toString()
 
-//                userCard.setOnClickListener {
-//                    item.let {
-////                        call.itemClick(it)
-//                    }
             }
         }
     }

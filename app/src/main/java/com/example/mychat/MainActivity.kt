@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.example.mychat.ui.main.MainViewModel
+import com.smartlook.android.core.api.Smartlook
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -23,8 +24,14 @@ class MainActivity : AppCompatActivity() {
         val sharedPref=this.getSharedPreferences("USER_STATE", Context.MODE_PRIVATE)
         val editor=sharedPref.edit()
 
-        val isUser=sharedPref.getBoolean("ALREADY_USER", false)
 
+        val smartlook = Smartlook.instance
+        smartlook.preferences.projectKey = "8a008c6b6fb32fb2a22f195b8fad519fccecdef0"
+        smartlook.start()
+        val smartlookInstance = Smartlook.instance
+        Smartlook.instance.preferences.projectKey = "8a008c6b6fb32fb2a22f195b8fad519fccecdef0"
+        val isUser=sharedPref.getBoolean("ALREADY_USER", false)
+        Smartlook.instance.start()
         if(!isUser){
             editor.putBoolean("ALREADY_USER",true)
             //other

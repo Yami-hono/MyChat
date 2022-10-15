@@ -16,6 +16,7 @@ import com.example.mychat.ui.main.MainViewModel
 import com.google.android.material.transition.MaterialSharedAxis
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.smartlook.android.core.api.Smartlook
 
 class ChatActivity : AppCompatActivity(), Call {
     private val viewModel by lazy{
@@ -85,7 +86,16 @@ class ChatActivity : AppCompatActivity(), Call {
         }
         bundle.putParcelable("SEND_TO", user)
         fragment.arguments = bundle
-        fragmentTransaction.replace(R.id.frame, fragment)
+        fragmentTransaction.replace(R.id.container, fragment)
         fragmentTransaction.commit()
+    }
+
+    override fun messageClick(msg: Message) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Smartlook.instance.stop()
     }
 }

@@ -9,7 +9,12 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
+        maven { url 'https://jitpack.io' }
+        maven {
+            url "https://sdk.smartlook.com/android/release"
+        }
         mavenCentral()
+        jcenter()
     }
 }
 rootProject.name = "My Chat"

@@ -86,9 +86,13 @@ dependencies {
 
 
     //smartlook
-//    implementation 'com.smartlook.android:smartlook-analytics:2.1.0'
+    implementation 'com.smartlook.android:smartlook-analytics:2.1.0'
 
     //imagePicker
+    implementation 'com.github.Drjacky:ImagePicker:2.3.20'
     implementation 'com.github.dhaval2404:imagepicker:2.1'
-    implementation 'com.github.dhaval2404:imagepicker-support:1.7.1'
+//    implementation 'com.github.dhaval2404:imagepicker-support:1.7.1'
+
+    //ImageView
+    implementation 'com.github.MikeOrtiz:TouchImageView:1.4.1'
 }

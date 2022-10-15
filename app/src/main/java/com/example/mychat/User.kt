@@ -14,14 +14,14 @@ data class User (
     val profilePic:String?=null
 ) : Parcelable
 
-
+@Parcelize
 data class Message(
     val msg:String,
     val name:String?,
     val id:String,
     val type:String,
     val time:String
-)
+) : Parcelable
 
 //data class ImageMessage(
 //

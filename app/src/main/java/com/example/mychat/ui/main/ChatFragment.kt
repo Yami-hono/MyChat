@@ -13,11 +13,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import com.example.mychat.Message
-import com.example.mychat.MessageListAdapter
-import com.example.mychat.StorageUtil
-import com.example.mychat.User
+import androidx.fragment.app.FragmentTransaction
+import com.example.mychat.*
 import com.example.mychat.databinding.FragmentChatBinding
+import com.google.android.material.transition.MaterialSharedAxis
+import com.smartlook.android.core.api.Smartlook
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -32,7 +32,7 @@ object DateUtils {
 }
 
 private const val RC_SELECT_IMAGE = 20
-class ChatFragment : Fragment() {
+class ChatFragment : Fragment(),Call {
 
     companion object {
         fun newInstance() = ChatFragment()
@@ -69,9 +69,9 @@ class ChatFragment : Fragment() {
 
         addObserver()
 //        val editor=sharedPref?.edit()
-        msgListAdapter= MessageListAdapter(requireActivity())
-//        viewModel.chatId=" ${viewModel.me.id} ${receiver?.id}"            //others
-        viewModel.chatId=" ${receiver?.id} ${viewModel.me.id}"              //mine
+        msgListAdapter= MessageListAdapter(requireActivity(), this)
+        viewModel.chatId=" ${viewModel.me.id} ${receiver?.id}"            //others
+//        viewModel.chatId=" ${receiver?.id} ${viewModel.me.id}"              //mine
         binding = FragmentChatBinding.inflate(inflater, container, false)
         binding.receiverName.text=receiver?.name
         viewModel.getMessageList()
@@ -144,9 +144,33 @@ class ChatFragment : Fragment() {
 //                for( i in it)
 //                    msgListAdapter.addMessage(i)
                 msgListAdapter.setUpdatedList(it as ArrayList<Message>)
+                binding.recyclerView.scrollToPosition(it.size-1)
             }
 
         }
+    }
+
+    override fun itemClick(user: User) {
+        TODO("Not yet implemented")
+    }
+
+    override fun messageClick(msg: Message) {
+        val fragment = ImageFragment()
+        val bundle = Bundle()
+        val fragmentTransaction: FragmentTransaction? = activity?.supportFragmentManager?.beginTransaction()
+        fragment?.apply {
+            exitTransition = MaterialSharedAxis(
+                MaterialSharedAxis.Z,
+                /* forward= */ false
+            ).apply {
+                duration = 500
+            }
+        }
+        bundle.putParcelable("MESSAGE", msg)
+        fragment.arguments = bundle
+        fragmentTransaction?.replace(R.id.chat, fragment)
+        fragmentTransaction?.commit()
+
     }
 
 }
