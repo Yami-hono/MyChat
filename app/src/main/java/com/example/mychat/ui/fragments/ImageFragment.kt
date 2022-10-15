@@ -1,4 +1,4 @@
-package com.example.mychat
+package com.example.mychat.ui.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,22 +6,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import com.bumptech.glide.Glide
-import com.example.mychat.databinding.FragmentChatBinding
+import com.example.mychat.ImageList
+import com.example.mychat.adapters.ImageAdapter
 import com.example.mychat.databinding.FragmentImageBinding
 
 
 class ImageFragment : Fragment() {
 
     private lateinit var binding: FragmentImageBinding
-    lateinit var messageImage:Message
+    lateinit var messageImageList: ImageList
+     private var position=-1
+
+    private lateinit var imgListAdapter: ImageAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val bundle = this.arguments
         arguments?.let {
-            messageImage= it.getParcelable("MESSAGE")!!
+            messageImageList= it.getParcelable("IMAGE_LIST")!!
+            position= it.getInt("POSITION")
         }
+        imgListAdapter=ImageAdapter(requireActivity())
+
     }
 
     override fun onCreateView(
@@ -44,11 +50,15 @@ class ImageFragment : Fragment() {
             }
             )
 
-        Glide.with(binding.root.context)
-            .load(messageImage.msg)
-            .placeholder(R.drawable.ic_baseline_image)
-            .fitCenter()
-            .into(binding.msgImage)
+        binding.imgPager.adapter=imgListAdapter
+        imgListAdapter.setUpdatedList(messageImageList)
+        binding.imgPager.setCurrentItem(position,true)
+
+//        Glide.with(binding.root.context)
+//            .load(messageImage.msg)
+//            .placeholder(R.drawable.ic_baseline_image)
+//            .fitCenter()
+//            .into(binding.msgImage)
         return binding.root
 
 

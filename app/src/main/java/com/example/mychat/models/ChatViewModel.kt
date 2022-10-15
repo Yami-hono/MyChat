@@ -1,8 +1,5 @@
-package com.example.mychat.ui.main
+package com.example.mychat.models
 
-import android.os.Build
-import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.mychat.Message
@@ -20,7 +17,7 @@ class ChatViewModel:ViewModel() {
     private val myRef = firebaseDatabase.reference.child("messages")
     private lateinit var lastmyRef: DatabaseReference
     var chatId=""
-    lateinit var me:User
+    lateinit var me: User
 
     var messageList=MutableLiveData<List<Message>>()
 
@@ -39,7 +36,6 @@ class ChatViewModel:ViewModel() {
 
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val value = snapshot.value as HashMap<String?, HashMap<String, String>>?
-                    Log.i("messageItems", "onDataChange: $value")
 
                     msgArr.clear()
 

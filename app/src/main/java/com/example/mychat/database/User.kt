@@ -23,6 +23,10 @@ data class Message(
     val time:String
 ) : Parcelable
 
+@Parcelize
+data class ImageList(
+    var msgList:MutableList<Message>?
+):Parcelable
 //data class ImageMessage(
 //
 //)

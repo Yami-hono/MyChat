@@ -95,4 +95,9 @@ dependencies {
 
     //ImageView
     implementation 'com.github.MikeOrtiz:TouchImageView:1.4.1'
+
+
+    //fragmentSwipe
+
+
 }

@@ -1,4 +1,4 @@
-package com.example.mychat
+package com.example.mychat.ui
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
@@ -6,16 +6,18 @@ import android.os.Bundle
 import android.util.Log
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
+import com.example.mychat.ImageList
+import com.example.mychat.PostDatabase
+import com.example.mychat.R
+import com.example.mychat.User
+import com.example.mychat.adapters.UserListAdapter
 import com.example.mychat.databinding.ActivityChatBinding
 import com.example.mychat.ui.main.Call
 import com.example.mychat.ui.main.ChatFragment
 import com.example.mychat.ui.main.MainViewModel
 import com.google.android.material.transition.MaterialSharedAxis
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
 import com.smartlook.android.core.api.Smartlook
 
 class ChatActivity : AppCompatActivity(), Call {
@@ -29,7 +31,7 @@ class ChatActivity : AppCompatActivity(), Call {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
-        binding= DataBindingUtil.setContentView(this,R.layout.activity_chat)
+        binding= DataBindingUtil.setContentView(this, R.layout.activity_chat)
         viewModel.database= Room.databaseBuilder(applicationContext,
             PostDatabase::class.java,
             "PostTable")
@@ -43,7 +45,6 @@ class ChatActivity : AppCompatActivity(), Call {
             id?.let { User(name,id) }
         }!!
 
-        Log.i("myUser", "onCreate: ${viewModel.me}")
 
 //        for(i in 0..10){
 //            val user=User("Yami $i","$i")
@@ -90,9 +91,10 @@ class ChatActivity : AppCompatActivity(), Call {
         fragmentTransaction.commit()
     }
 
-    override fun messageClick(msg: Message) {
+    override fun messageClick(msg: ImageList, pos: Int) {
         TODO("Not yet implemented")
     }
+
 
     override fun onStop() {
         super.onStop()

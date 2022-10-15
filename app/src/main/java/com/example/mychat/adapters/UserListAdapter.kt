@@ -1,11 +1,12 @@
-package com.example.mychat
+package com.example.mychat.adapters
 
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mychat.R
+import com.example.mychat.User
 import com.example.mychat.databinding.LiUserItemBinding
 import com.example.mychat.ui.main.Call
 

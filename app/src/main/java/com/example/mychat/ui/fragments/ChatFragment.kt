@@ -15,9 +15,11 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.FragmentTransaction
 import com.example.mychat.*
+import com.example.mychat.adapters.MessageListAdapter
 import com.example.mychat.databinding.FragmentChatBinding
+import com.example.mychat.ui.fragments.ImageFragment
+import com.example.mychat.models.ChatViewModel
 import com.google.android.material.transition.MaterialSharedAxis
-import com.smartlook.android.core.api.Smartlook
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
@@ -56,7 +58,6 @@ class ChatFragment : Fragment(),Call {
             id?.let { User(name,id) }
         }!!
 
-        Log.i("messageList", "onCreate: ${viewModel.me}")
 //        viewModel.chatId="${receiver?.id}+$id"
 
 
@@ -86,6 +87,7 @@ class ChatFragment : Fragment(),Call {
             binding.msgTxt.setText("")
 
         }
+
 
         binding.sendCam.setOnClickListener {
             val intent = Intent().apply {
@@ -140,7 +142,6 @@ class ChatFragment : Fragment(),Call {
     fun addObserver(){
         viewModel.messageList.observe(viewLifecycleOwner){ it ->
             if(it.isNotEmpty()) {
-                Log.i("messageItems", "addObserver: $it")
 //                for( i in it)
 //                    msgListAdapter.addMessage(i)
                 msgListAdapter.setUpdatedList(it as ArrayList<Message>)
@@ -154,7 +155,7 @@ class ChatFragment : Fragment(),Call {
         TODO("Not yet implemented")
     }
 
-    override fun messageClick(msg: Message) {
+    override fun messageClick(msg: ImageList,pos: Int) {
         val fragment = ImageFragment()
         val bundle = Bundle()
         val fragmentTransaction: FragmentTransaction? = activity?.supportFragmentManager?.beginTransaction()
@@ -166,7 +167,9 @@ class ChatFragment : Fragment(),Call {
                 duration = 500
             }
         }
-        bundle.putParcelable("MESSAGE", msg)
+        Log.i("imageClick", "messageClick: ")
+        bundle.putParcelable("IMAGE_LIST", msg)
+        bundle.putInt("POSITION",pos)
         fragment.arguments = bundle
         fragmentTransaction?.replace(R.id.chat, fragment)
         fragmentTransaction?.commit()

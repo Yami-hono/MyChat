@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mychat.ImageList
 import com.example.mychat.Message
 import com.example.mychat.PostDatabase
 import com.example.mychat.User
@@ -42,7 +43,6 @@ class MainViewModel : ViewModel() {
                 if (value != null) {
                     for ((key, vl) in value) {
                         val user= vl["name"]?.let { vl["id"]?.let { it1 -> User(it, it1) } }
-                        Log.i("myUser", "onDataChange: $user---$me")
                         if(!userList.contains(user) && user != null && user!=me){
                             userList.add(user)
                             insertIntoDB(user)
@@ -79,6 +79,6 @@ class MainViewModel : ViewModel() {
 
 interface Call {
     fun itemClick(user: User)
-    fun messageClick(msg: Message)
+    fun messageClick(msg: ImageList, pos:Int)
 
 }

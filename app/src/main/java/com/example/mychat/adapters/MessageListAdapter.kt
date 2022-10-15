@@ -1,4 +1,4 @@
-package com.example.mychat
+package com.example.mychat.adapters
 
 
 import android.content.Context
@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.mychat.ImageList
+import com.example.mychat.Message
+import com.example.mychat.R
 import com.example.mychat.databinding.MyImageMessageBinding
 import com.example.mychat.databinding.MyMessageBinding
 import com.example.mychat.databinding.OtherImageMessageBinding
@@ -30,7 +33,8 @@ class MessageListAdapter(val context: Context,val call:Call) : ListAdapter<Messa
     val sharedPref=context?.getSharedPreferences("USER_STATE", Context.MODE_PRIVATE)
     val myName=sharedPref?.getString("name","")
     val myId=sharedPref?.getString("id","")
-
+    var msgList= mutableListOf<Message>()
+     var  imageList= ImageList(null)
 
     override fun getItemViewType(position: Int): Int {
         val message = messages[position]
@@ -50,9 +54,9 @@ class MessageListAdapter(val context: Context,val call:Call) : ListAdapter<Messa
     fun setUpdatedList(data:ArrayList<Message>){
 //        data.sortByDescending { it.time }
 //        data.reverse()
-        Log.i("messageItems", "setUpdatedList: $data")
         this.messages= data
         notifyDataSetChanged()
+        setImageList()
     }
 
     fun addMessage(message: Message){
@@ -62,16 +66,25 @@ class MessageListAdapter(val context: Context,val call:Call) : ListAdapter<Messa
     }
 
 
+    fun setImageList(){
+        msgList.clear()
+        for( i in messages){
+            if(i.type=="IMAGE")
+            msgList.add(i)
+        }
+    }
+
+
 
 
     open class MessageViewHolder (view: View) : RecyclerView.ViewHolder(view) {
-        open fun bind(message:Message) {}
+        open fun bind(message:Message,position: Int) {}
     }
 
     inner class MyMessageViewHolder(var view:View) :
         MessageViewHolder(view) {
         val binding: MyMessageBinding = MyMessageBinding.bind(itemView)
-        override fun bind(message: Message) {
+        override fun bind(message: Message,position: Int) {
             with(binding) {
                 txtMyMessage.text=message.msg
                 txtMyMessageTime.text= message.time.toString()
@@ -82,7 +95,7 @@ class MessageListAdapter(val context: Context,val call:Call) : ListAdapter<Messa
     inner class MyImageViewHolder(var view:View) :
         MessageViewHolder(view) {
         val binding: MyImageMessageBinding= MyImageMessageBinding.bind(itemView)
-        override fun bind(message: Message) {
+        override fun bind(message: Message,position: Int) {
             with(binding) {
                 Glide.with(root.context)
                     .load(message.msg )
@@ -91,7 +104,9 @@ class MessageListAdapter(val context: Context,val call:Call) : ListAdapter<Messa
                     .into(imageViewMessageImage)
             }
             binding.messageRoot.setOnClickListener {
-                call.messageClick(message)
+
+                imageList.msgList=msgList
+                imageList.let { it1 -> call.messageClick(it1,position) }
             }
         }
     }
@@ -99,7 +114,7 @@ class MessageListAdapter(val context: Context,val call:Call) : ListAdapter<Messa
     inner class OtherImageViewHolder(var view:View) :
         MessageViewHolder(view) {
         val binding: OtherImageMessageBinding = OtherImageMessageBinding.bind(itemView)
-        override fun bind(message: Message) {
+        override fun bind(message: Message,position: Int) {
             with(binding) {
                 Glide.with(root.context)
                     .load(message.msg)
@@ -108,7 +123,8 @@ class MessageListAdapter(val context: Context,val call:Call) : ListAdapter<Messa
                     .into(imageViewMessageImage)
             }
             binding.messageRoot.setOnClickListener {
-                call.messageClick(message)
+                imageList?.msgList=msgList
+                imageList?.let { it1 -> call.messageClick(it1, pos = position) }
             }
         }
     }
@@ -116,7 +132,7 @@ class MessageListAdapter(val context: Context,val call:Call) : ListAdapter<Messa
     inner class OtherMessageViewHolder(var view: View) :
         MessageViewHolder(view) {
         val binding: OtherMessageBinding = OtherMessageBinding.bind(itemView)
-        override fun bind(message: Message) {
+        override fun bind(message: Message,position: Int) {
             with(binding) {
                 txtOtherMessage.text=message.msg
                 txtOtherUser.text=message.name
@@ -133,12 +149,11 @@ class MessageListAdapter(val context: Context,val call:Call) : ListAdapter<Messa
 
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         val message = messages[position]
-        Log.i("MessageType", "onBindViewHolder: ${message.type}")
-        holder.bind(message)
+        holder.bind(message,position)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
-        Log.i("MessageType", "onCreateViewHolder: $viewType")
+
         return if(viewType == VIEW_TYPE_MY_MESSAGE) {
             MyMessageViewHolder(
                 LayoutInflater.from(context).inflate(R.layout.my_message, parent, false)
@@ -165,14 +180,12 @@ class MessageListAdapter(val context: Context,val call:Call) : ListAdapter<Messa
 
         //2
         override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean {
-            Log.i("messageItem", "areItemsTheSame: ${oldItem == newItem}")
 
             return oldItem == newItem
         }
 
         //3
         override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean {
-            Log.i("messageItem", "areContentsTheSame: ${oldItem.msg == newItem.msg}")
             return oldItem.time == newItem.time
         }
     }
