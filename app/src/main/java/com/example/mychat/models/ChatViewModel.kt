@@ -1,5 +1,6 @@
 package com.example.mychat.models
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.mychat.Message
@@ -18,6 +19,7 @@ class ChatViewModel:ViewModel() {
     private lateinit var lastmyRef: DatabaseReference
     var chatId=""
     lateinit var me: User
+    lateinit var replyMsg:Message
 
     var messageList=MutableLiveData<List<Message>>()
 
@@ -29,6 +31,7 @@ class ChatViewModel:ViewModel() {
     }
 //    var msgArr= arrayListOf<Message>()
     var msgArr= mutableListOf<Message>()
+    var msgValue=HashMap<String?, HashMap<String, String>>()
 
     fun getMessageList() {
             myRef.child(chatId).addValueEventListener(object : ValueEventListener {
@@ -36,7 +39,9 @@ class ChatViewModel:ViewModel() {
 
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val value = snapshot.value as HashMap<String?, HashMap<String, String>>?
-
+                    if (value != null) {
+                        msgValue=value
+                    }
                     msgArr.clear()
 
                     if (value != null) {
@@ -45,15 +50,18 @@ class ChatViewModel:ViewModel() {
                                 vl["id"]?.let { it1 ->
                                     vl["type"]?.let { it2 ->
                                         vl["time"]?.let { it3 ->
-                                            Message(
-                                                it, vl["name"],
-                                                it1, it2,
-                                                it3
-                                            )
+                                            vl["read"]?.let { it4 ->
+                                                Message(
+                                                    it, vl["name"],
+                                                    it1, it2,
+                                                    it3, it4
+                                                )
+                                            }
                                         }
                                     }
                                 }
                             }
+                            Log.i("isRead", "onDataChange: $value")
                             if (msg != null) {
                                 msgArr.add(msg)
                             }
@@ -68,5 +76,20 @@ class ChatViewModel:ViewModel() {
                 }
 
             })
+    }
+
+    fun sendReadReceipt(message:Message){
+        for ((key, vl) in msgValue) {
+            if(vl["name"]==message.name && vl["time"]==message.time &&
+                vl["type"]==message.type && vl["id"] ==message.id
+            ){
+                vl["read"]="TRUE"
+            }
+
+        }
+
+//        msgArr[pos].isRead="TRUE"
+        myRef.child(chatId).setValue(msgValue)
+
     }
 }

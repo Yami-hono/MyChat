@@ -4,26 +4,29 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import androidx.lifecycle.ViewModelProvider
+import android.graphics.Canvas
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.example.mychat.*
 import com.example.mychat.adapters.MessageListAdapter
 import com.example.mychat.databinding.FragmentChatBinding
-import com.example.mychat.ui.fragments.ImageFragment
 import com.example.mychat.models.ChatViewModel
+import com.example.mychat.ui.fragments.ImageFragment
 import com.google.android.material.transition.MaterialSharedAxis
 import java.io.ByteArrayOutputStream
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 object DateUtils {
@@ -44,7 +47,8 @@ class ChatFragment : Fragment(),Call {
     private var receiver: User?=null
     private lateinit var viewModel: ChatViewModel
     private lateinit var binding: FragmentChatBinding
-
+    private lateinit var itemTouchHelper: ItemTouchHelper
+    var isReply=MutableLiveData(false)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[ChatViewModel::class.java]
@@ -74,6 +78,7 @@ class ChatFragment : Fragment(),Call {
 //        viewModel.chatId=" ${viewModel.me.id} ${receiver?.id}"            //others
         viewModel.chatId=" ${receiver?.id} ${viewModel.me.id}"              //mine
         binding = FragmentChatBinding.inflate(inflater, container, false)
+        binding = FragmentChatBinding.inflate(inflater, container, false)
         binding.receiverName.text=receiver?.name
         viewModel.getMessageList()
         val time = Calendar.getInstance().time
@@ -81,7 +86,7 @@ class ChatFragment : Fragment(),Call {
         val current = formatter.format(time)
         binding.sendBtn.setOnClickListener {
             val text= binding.msgTxt.text.toString()
-            val message=Message(text,viewModel.me.name,viewModel.me.id,"TEXT",System.currentTimeMillis().toString())
+            val message=Message(text,viewModel.me.name,viewModel.me.id,"TEXT",System.currentTimeMillis().toString(),"FALSE")
 
             if(text.isNotEmpty()) viewModel.putMessage(message )
             binding.msgTxt.setText("")
@@ -111,6 +116,88 @@ class ChatFragment : Fragment(),Call {
             )
 
         binding.recyclerView.adapter=msgListAdapter
+
+        binding.replyClose.setOnClickListener { binding.replyView.visibility=View.GONE }
+
+
+        val simpleCallback = object :
+            ItemTouchHelper.SimpleCallback(
+                ItemTouchHelper.RIGHT,
+                 ItemTouchHelper.RIGHT
+            ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean = false
+
+            override fun isLongPressDragEnabled(): Boolean {
+                return true
+            }
+
+
+            override fun isItemViewSwipeEnabled(): Boolean {
+                return false
+            }
+
+
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+
+                // If you want to add a background, a text, an icon
+                //  as the user swipes, this is where to start decorating
+                //  I will link you to a library I created for that below
+                val isDraggingRight = dX > 300
+                val isDraggingIntoUndraggableArea =
+                    (isDraggingRight)
+                val newDx = if (isDraggingIntoUndraggableArea) {
+                    300f  // Clamp
+                } else {
+                    dX
+                }
+                super.onChildDraw(
+                    c,
+                    recyclerView,
+                    viewHolder,
+                    newDx,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
+
+                if(dX>400){
+                    Log.i("messageDrag", "onChildDraw: ")
+                    isReply.value=true
+                    binding.replyView.visibility=View.VISIBLE
+                }
+
+                //actionState should be 2 to enable the drag function
+                //dX should be 300
+
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                when (direction) {
+                    ItemTouchHelper.RIGHT -> {
+
+                        // Do something when a user swept right
+                    }
+                }
+            }
+        }
+//        itemTouchHelper.startDrag()
+        itemTouchHelper = ItemTouchHelper(simpleCallback)
+        itemTouchHelper.attachToRecyclerView(binding.recyclerView)
+
+
 
         return binding.root
     }
@@ -144,7 +231,8 @@ class ChatFragment : Fragment(),Call {
                         viewModel.me.name,
                         viewModel.me.id,
                         "IMAGE",
-                        System.currentTimeMillis().toString()
+                        System.currentTimeMillis().toString(),
+                        "FALSE"
                     )
                     viewModel.putMessage(message)
                 }
@@ -171,7 +259,8 @@ class ChatFragment : Fragment(),Call {
                             viewModel.me.name,
                             viewModel.me.id,
                             "IMAGE",
-                            System.currentTimeMillis().toString()
+                            System.currentTimeMillis().toString(),
+                            "FALSE"
                         )
                         viewModel.putMessage(message)
                 }
@@ -188,7 +277,13 @@ class ChatFragment : Fragment(),Call {
                 msgListAdapter.setUpdatedList(it as ArrayList<Message>)
                 binding.recyclerView.scrollToPosition(it.size-1)
             }
-
+        }
+        isReply.observe(viewLifecycleOwner){
+            if(it) {
+                Log.i("replied", "addObserver: ${viewModel.replyMsg}")
+                isReply.value=false
+                binding.replyTxt.text=viewModel.replyMsg.msg
+            }
         }
     }
 
@@ -215,6 +310,14 @@ class ChatFragment : Fragment(),Call {
         fragmentTransaction?.replace(R.id.chat, fragment)
         fragmentTransaction?.commit()
 
+    }
+
+    override fun msgData(message: Message) {
+        viewModel.replyMsg=message
+    }
+
+    override fun readReceipt(message: Message) {
+        viewModel.sendReadReceipt(message)
     }
 
 }

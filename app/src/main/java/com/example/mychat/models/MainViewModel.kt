@@ -80,5 +80,7 @@ class MainViewModel : ViewModel() {
 interface Call {
     fun itemClick(user: User)
     fun messageClick(msg: ImageList, pos:Int)
+    fun msgData(message: Message)
+    fun readReceipt(message: Message)
 
 }

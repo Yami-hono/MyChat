@@ -8,10 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
-import com.example.mychat.ImageList
-import com.example.mychat.PostDatabase
-import com.example.mychat.R
-import com.example.mychat.User
+import com.example.mychat.*
 import com.example.mychat.adapters.UserListAdapter
 import com.example.mychat.databinding.ActivityChatBinding
 import com.example.mychat.ui.main.Call
@@ -92,6 +89,14 @@ class ChatActivity : AppCompatActivity(), Call {
     }
 
     override fun messageClick(msg: ImageList, pos: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun msgData(message: Message) {
+        TODO("Not yet implemented")
+    }
+
+    override fun readReceipt(message: Message) {
         TODO("Not yet implemented")
     }
 

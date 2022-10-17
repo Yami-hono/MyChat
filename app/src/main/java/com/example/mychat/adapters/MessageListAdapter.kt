@@ -2,10 +2,11 @@ package com.example.mychat.adapters
 
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -70,7 +71,7 @@ class MessageListAdapter(val context: Context,val call:Call) : ListAdapter<Messa
         msgList.clear()
         for( i in messages){
             if(i.type=="IMAGE")
-            msgList.add(i)
+                msgList.add(i)
         }
     }
 
@@ -86,9 +87,17 @@ class MessageListAdapter(val context: Context,val call:Call) : ListAdapter<Messa
         val binding: MyMessageBinding = MyMessageBinding.bind(itemView)
         override fun bind(message: Message,position: Int) {
             with(binding) {
+                ImageViewCompat.setImageTintList(binding.read, ColorStateList.valueOf(Color.GRAY));
                 txtMyMessage.text=message.msg
-                txtMyMessageTime.text= message.time.toString()
+                txtMyMessageTime.text= message.time
+                if(message.isRead=="TRUE")
+                    ImageViewCompat.setImageTintList(binding.read, ColorStateList.valueOf((Color.parseColor("#006A4E"))))
                 }
+            binding.userCard.setOnTouchListener { view, motionEvent ->
+
+                call.msgData(message)
+                return@setOnTouchListener true
+            }
             }
         }
 
@@ -97,14 +106,19 @@ class MessageListAdapter(val context: Context,val call:Call) : ListAdapter<Messa
         val binding: MyImageMessageBinding= MyImageMessageBinding.bind(itemView)
         override fun bind(message: Message,position: Int) {
             with(binding) {
+                ImageViewCompat.setImageTintList(binding.read, ColorStateList.valueOf(Color.GRAY));
                 Glide.with(root.context)
                     .load(message.msg )
                     .centerCrop()
                     .placeholder(R.drawable.ic_baseline_image)
                     .into(imageViewMessageImage)
+                if(message.isRead=="TRUE")
+                    ImageViewCompat.setImageTintList(binding.read, ColorStateList.valueOf((Color.parseColor("#006A4E"))))
+
             }
             binding.messageRoot.setOnClickListener {
-
+                call.msgData(message)
+                Log.i("imageclicks", "bind: my ")
                 imageList.msgList=msgList
                 imageList.let { it1 -> call.messageClick(it1,position) }
             }
@@ -116,6 +130,7 @@ class MessageListAdapter(val context: Context,val call:Call) : ListAdapter<Messa
         val binding: OtherImageMessageBinding = OtherImageMessageBinding.bind(itemView)
         override fun bind(message: Message,position: Int) {
             with(binding) {
+                call.readReceipt(message)
                 Glide.with(root.context)
                     .load(message.msg)
                     .placeholder(R.drawable.ic_baseline_image)
@@ -123,8 +138,9 @@ class MessageListAdapter(val context: Context,val call:Call) : ListAdapter<Messa
                     .into(imageViewMessageImage)
             }
             binding.messageRoot.setOnClickListener {
-                imageList?.msgList=msgList
-                imageList?.let { it1 -> call.messageClick(it1, pos = position) }
+                call.msgData(message)
+                imageList.msgList=msgList
+                imageList.let { it1 -> call.messageClick(it1, pos = position) }
             }
         }
     }
@@ -134,10 +150,15 @@ class MessageListAdapter(val context: Context,val call:Call) : ListAdapter<Messa
         val binding: OtherMessageBinding = OtherMessageBinding.bind(itemView)
         override fun bind(message: Message,position: Int) {
             with(binding) {
+                call.readReceipt(message)
                 txtOtherMessage.text=message.msg
                 txtOtherUser.text=message.name
-                txtOtherMessageTime.text= message.time.toString()
+                txtOtherMessageTime.text= message.time
+                binding.userCard.setOnTouchListener { view, motionEvent ->
 
+                   call.msgData(message)
+                    return@setOnTouchListener true
+                }
             }
         }
     }

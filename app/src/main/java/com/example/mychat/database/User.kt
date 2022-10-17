@@ -20,7 +20,8 @@ data class Message(
     val name:String?,
     val id:String,
     val type:String,
-    val time:String
+    val time:String,
+    var isRead:String
 ) : Parcelable
 
 @Parcelize

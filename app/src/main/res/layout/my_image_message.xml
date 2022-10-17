@@ -30,8 +30,18 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/imageView_message_image"
             android:layout_alignEnd="@id/imageView_message_image"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="30dp"
             android:textSize="12sp"
             tools:text="3/15/2018 3:00 PM"/>
+
+        <ImageView
+            android:id="@+id/read"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/imageView_message_image"
+            android:layout_alignEnd="@id/imageView_message_image"
+            android:layout_marginTop="-10dp"
+            android:layout_marginEnd="3dp"
+            android:src="@drawable/ic_read" />
     </RelativeLayout>
 </FrameLayout>

@@ -37,11 +37,20 @@
             android:layout_height="wrap_content"
             android:textSize="10sp"
             android:textStyle="bold"
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             app:layout_constraintBottom_toBottomOf="@+id/txtMyMessage"
-            app:layout_constraintEnd_toEndOf="@+id/txtMyMessage" />
+            app:layout_constraintEnd_toEndOf="@id/txtMyMessage" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageView
+        android:id="@+id/read"
+        android:layout_width="20dp"
+        android:layout_height="30dp"
+        android:src="@drawable/ic_read"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
 
 
