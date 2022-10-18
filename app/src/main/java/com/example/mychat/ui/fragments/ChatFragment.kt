@@ -62,9 +62,6 @@ class ChatFragment : Fragment(),Call {
             id?.let { User(name,id) }
         }!!
 
-//        viewModel.chatId="${receiver?.id}+$id"
-
-
     }
 
     override fun onCreateView(
@@ -75,8 +72,14 @@ class ChatFragment : Fragment(),Call {
         addObserver()
 //        val editor=sharedPref?.edit()
         msgListAdapter= MessageListAdapter(requireActivity(), this)
+        if(viewModel.me.id< receiver?.id.toString()){
+            viewModel.chatId=" ${viewModel.me.id} ${receiver?.id}"
+        }
+        else{
+            viewModel.chatId=" ${receiver?.id} ${viewModel.me.id}"
+        }
 //        viewModel.chatId=" ${viewModel.me.id} ${receiver?.id}"            //others
-        viewModel.chatId=" ${receiver?.id} ${viewModel.me.id}"              //mine
+//        viewModel.chatId=" ${receiver?.id} ${viewModel.me.id}"              //mine
         binding = FragmentChatBinding.inflate(inflater, container, false)
         binding = FragmentChatBinding.inflate(inflater, container, false)
         binding.receiverName.text=receiver?.name

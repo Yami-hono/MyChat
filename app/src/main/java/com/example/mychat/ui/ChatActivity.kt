@@ -28,13 +28,14 @@ class ChatActivity : AppCompatActivity(), Call {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
+        viewModel.getUserList()
         binding= DataBindingUtil.setContentView(this, R.layout.activity_chat)
         viewModel.database= Room.databaseBuilder(applicationContext,
             PostDatabase::class.java,
             "PostTable")
             .fallbackToDestructiveMigration()
             .build()
-        viewModel.getUserList()
+//        viewModel.getUserList()
         val sharedPref=this.getSharedPreferences("USER_STATE", Context.MODE_PRIVATE)
         val name=sharedPref?.getString("name","")
         val id=sharedPref?.getString("id","")
@@ -52,8 +53,11 @@ class ChatActivity : AppCompatActivity(), Call {
         binding.recyclerView.adapter=userListAdapter
         addObserver()
 //        viewModel.deleteAll()
+    }
 
-
+    override fun onResume() {
+        super.onResume()
+        addObserver()
     }
 
     private fun addObserver(){
@@ -61,11 +65,6 @@ class ChatActivity : AppCompatActivity(), Call {
             viewModel.userList= it as MutableList<User>
             it.sortBy { it.id }
             userListAdapter.setUpdatedList(it as ArrayList<User> )
-//            if(it.isEmpty()) {
-//                for (i in 2..10) {
-//                    viewModel.putData(User("Yami $i", "$i"))
-//                }
-//            }
 
         }
     }

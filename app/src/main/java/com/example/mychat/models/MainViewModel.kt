@@ -23,13 +23,21 @@ class MainViewModel : ViewModel() {
      var me:User?=null
 
     fun putData(user:User){
+        Log.i("anderchalo", "putData: $user")
         if(!userList.contains(user) && user!=me &&userList.isNotEmpty()) {
+            Log.i("anderchalo", "putData: checked $user")
             userList.add(user)
+            lastmyRef = myRef.push()
+            lastmyRef.setValue(user)
+        }
+        if(user==me && !ogUserList.contains(user)){
+            Log.i("anderchalo", "putData: checked 3  ${ogUserList}")
             lastmyRef = myRef.push()
             lastmyRef.setValue(user)
         }
     }
      var userList= mutableListOf<User>()
+     var ogUserList= mutableListOf<User>()
     lateinit var lastmyRef:DatabaseReference
 //    lateinit var list:MutableList<User>
 
@@ -40,9 +48,13 @@ class MainViewModel : ViewModel() {
             override fun onDataChange(snapshot: DataSnapshot) {
 //                userList.clear()
                 val value = snapshot.value as HashMap<String?, HashMap<String,String>>?
+                Log.i("anderchalo", "putData: checked 3  ${value}")
                 if (value != null) {
                     for ((key, vl) in value) {
                         val user= vl["name"]?.let { vl["id"]?.let { it1 -> User(it, it1) } }
+                        if (user != null) {
+                            ogUserList.add(user)
+                        }
                         if(!userList.contains(user) && user != null && user!=me){
                             userList.add(user)
                             insertIntoDB(user)

@@ -37,24 +37,32 @@ class MainActivity : AppCompatActivity() {
 //        Smartlook.instance.start()
 
 
-        if(!isUser){
-            editor.putBoolean("ALREADY_USER",true)
+        if(isUser){
+            CoroutineScope(Dispatchers.IO).launch{
+                delay(500)
+                startActivity(Intent(this@MainActivity, ChatActivity::class.java))
+                finish()
+            }
+
+//            editor.putBoolean("ALREADY_USER",true)
             //other
-            editor.putString("name", "Yami 8")
-            editor.putString("id","8")
-            val user= User("Yami 8","8")
+//            editor.putString("name", "Yami 8")
+//            editor.putString("id","8")
+//            val user= User("Yami 8","8")
             //me
 //            editor.putString("name", "Sigma")
 //            editor.putString("id","Test@1")
 //            val user=User("Sigma","Test@1")
-            viewModel.putData(user)
+//            viewModel.putData(user)
+        }
+        else{
+            CoroutineScope(Dispatchers.IO).launch{
+                delay(500)
+                startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+                finish()
+            }
         }
         editor.apply()
 
-        CoroutineScope(Dispatchers.IO).launch{
-            delay(500)
-            startActivity(Intent(this@MainActivity, ChatActivity::class.java))
-            finish()
-        }
     }
 }
